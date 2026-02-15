@@ -5,7 +5,7 @@
 bin/
 
 # IntelliJ IDEA
-.idea
+.idean
 *.iml
 
 # VS Code
