@@ -1,48 +1,35 @@
 pipeline {
     agent any
-
     stages {
-
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/Kavyaaps/devops.git'
             }
         }
-
-        stage('Build') {
-            steps {
-                sh '''
-                docker run --rm \
-                -v ${WORKSPACE}:/app \
-                -w /app \
-                maven:3.9.6-eclipse-temurin-17 \
-                mvn clean package
-                '''
-            }
-        }
-
         stage('Docker Build') {
             steps {
-                sh 'docker build -t petclinic-app .'
+                sh 'docker build -t my-web-app .'
             }
         }
-
-        stage('Run Compose') {
+        stage('Deploy') {
             steps {
-                sh 'docker compose up -d || docker-compose up -d'
+                sh 'docker stop my-app || true'
+                sh 'docker rm my-app || true'
+                sh 'docker run -d -p 4000:80 --name my-app my-web-app'
             }
         }
-
         stage('Test') {
             steps {
-                sh 'curl http://localhost:8080 || true'
+                sh 'curl http://localhost:4000 || true'
             }
         }
-
-        stage('Cleanup') {
-            steps {
-                sh 'docker compose down || docker-compose down'
-            }
+    }
+    post {
+        success {
+            echo 'Deployment successful! App running at http://localhost:4000'
+        }
+        failure {
+            echo 'Pipeline failed. Check the logs above.'
         }
     }
 }
