@@ -3,11 +3,11 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/Kavyaaps/devops.git'
-            }
-        }
+       stage('Checkout') {
+    steps {
+        git branch: 'main', url: 'https://github.com/Kavyaaps/devops.git'
+    }
+}
 
         stage('Build') {
             steps {
