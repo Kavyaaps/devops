@@ -11,31 +11,31 @@ pipeline {
 
         stage('Build') {
             steps {
-                bat 'mvn clean package'
+                sh 'mvn clean package'
             }
         }
 
         stage('Docker Build') {
             steps {
-                bat 'docker build -t petclinic-app .'
+                sh 'docker build -t petclinic-app .'
             }
         }
 
         stage('Run Compose') {
             steps {
-                bat 'docker-compose up -d'
+                sh 'docker compose up -d'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Testing running...'
+                sh 'curl http://localhost:8080 || true'
             }
         }
 
         stage('Cleanup') {
             steps {
-                bat 'docker-compose down'
+                sh 'docker compose down'
             }
         }
     }
