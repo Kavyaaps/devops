@@ -9,11 +9,17 @@ pipeline {
             }
         }
 
-      stage('Build') {
-    steps {
-        sh 'docker run --rm -v $PWD:/app -w /app maven:3.9.6-eclipse-temurin-17 mvn clean package'
-    }
-}
+        stage('Build') {
+            steps {
+                sh '''
+                docker run --rm \
+                -v ${WORKSPACE}:/app \
+                -w /app \
+                maven:3.9.6-eclipse-temurin-17 \
+                mvn clean package
+                '''
+            }
+        }
 
         stage('Docker Build') {
             steps {
@@ -23,7 +29,7 @@ pipeline {
 
         stage('Run Compose') {
             steps {
-                sh 'docker compose up -d'
+                sh 'docker compose up -d || docker-compose up -d'
             }
         }
 
@@ -35,7 +41,7 @@ pipeline {
 
         stage('Cleanup') {
             steps {
-                sh 'docker compose down'
+                sh 'docker compose down || docker-compose down'
             }
         }
     }
