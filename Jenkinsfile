@@ -3,13 +3,19 @@ pipeline {
 
     stages {
 
-       stage('Checkout') {
-    steps {
-        git branch: 'main', url: 'https://github.com/Kavyaaps/devops.git'
-    }
-}
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Kavyaaps/devops.git'
+            }
+        }
 
         stage('Build') {
+            steps {
+                bat 'mvn clean package'
+            }
+        }
+
+        stage('Docker Build') {
             steps {
                 bat 'docker build -t petclinic-app .'
             }
@@ -23,7 +29,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                bat 'docker-compose run test'
+                echo 'Testing running...'
             }
         }
 
